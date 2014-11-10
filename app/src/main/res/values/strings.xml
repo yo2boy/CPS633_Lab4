@@ -2,4 +2,6 @@
 <resources>
     <string name="hello">Hello World, Lab4!</string>
     <string name="app_name">Lab4</string>
+    <string name="text">New Text</string>
+    <string name="button1">Press me!</string>
 </resources>
