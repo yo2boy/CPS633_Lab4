@@ -6,13 +6,23 @@
     <application android:icon="@drawable/icon" android:label="@string/app_name">
         <activity android:name=".Lab4"
                   android:label="@string/app_name">
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <receiver android:name=".SMSReceiver">
+            <intent-filter>
+                <action android:name="android.provider.Telephony.SMS_RECEIVED"/>
+            </intent-filter>
+        </receiver>
+
 		<!-- YOU NEED TO DECLARE SMSReceiver AS EITHER AN ACTIVITY/RECEIVER/SERVICE SIMILAR TO ABOVE -->
     </application>
     <uses-sdk android:minSdkVersion="8" />
 	<!-- YOU NEED TO ADD PERMISSIONS IN THIS AREA THAT WILL ALLOW YOUR APPLICATION TO READ SMS MESSAGES -->
+    <uses-permission android:name="android.permission.RECEIVE_SMS"/>
+    <uses-permission android:name="android.permission.READ_SMS" />
 </manifest> 
