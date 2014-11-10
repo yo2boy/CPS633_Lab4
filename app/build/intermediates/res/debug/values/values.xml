@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- From: file:/C:/Users/yo2boy/AndroidstudioProjects/CPS633_Lab4/app/src/main/res/values/strings.xml -->
+    <eat-comment/>
+    <string name="app_name">Lab4</string>
+    <string name="hello">Hello World, Lab4!</string>
+</resources>
