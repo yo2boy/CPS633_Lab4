@@ -26,7 +26,7 @@ public class Lab4 extends Activity {
         textView = (TextView) findViewById(R.id.textView);
         textView.setText("Pressed!");
 
-        textView.setTextSize((float) 70.0);
+        textView.setTextSize(100);
 
         count++;
         if(count == 1)
