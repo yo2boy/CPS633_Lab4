@@ -29,6 +29,16 @@ public class SMSReceiver extends BroadcastReceiver{
         try {
             if (bundle != null) {
                 //pdus = Protocol Description Unit. Used by SMS btw.
+
+                //Why cast bundle.get as Object[] you say?
+                //Well:
+
+                /*
+                    A PDU is a "protocol description unit", which is the industry format for an SMS message.
+                    Because SMSMessage reads/writes them you shouldn't need to dissect them.
+                    A large message might be broken into many, which is why it is an array of objects.
+                 */
+
                 final Object[] pdusObj = (Object[]) bundle.get("pdus");
 
                 for (Object aPdusObj : pdusObj) {
@@ -49,6 +59,7 @@ public class SMSReceiver extends BroadcastReceiver{
                     int duration = Toast.LENGTH_LONG;
                     Toast toast = Toast.makeText(context,
                             "senderNum: " + senderNum + ", message: " + message, duration);
+                    //This will be gone in the final build
                     toast.show();
                 }
             }
@@ -80,13 +91,14 @@ public class SMSReceiver extends BroadcastReceiver{
         }
     }
 
-
     public static void sendSMS(Context context, String senderNum, String message) {
         Log.d("sendSMS", "Sending a SMS now!");
 
         try {
             SmsManager smsManager = SmsManager.getDefault();
             smsManager.sendTextMessage(senderNum, null, message, null, null);
+
+            //this will be gone in the final build
             Toast.makeText(context.getApplicationContext(), "SMS sent.",
                     Toast.LENGTH_LONG).show();
         } catch (Exception e) {
