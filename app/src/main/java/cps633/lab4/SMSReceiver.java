@@ -9,28 +9,27 @@ import android.telephony.SmsMessage;
 import android.util.Log;
 import android.widget.Toast;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
 
 /* Class used to listen for incoming SMS Messages */
 public class SMSReceiver extends BroadcastReceiver{
 
-    private final String smsIntent = "cps633.lab4";
-
     // Get the object of SmsManager
     final SmsManager sms = SmsManager.getDefault();
     String senderNum;
     String message;
+    public boolean flag = false;
 
     public void onReceive(Context context, Intent intent) {
 
-        if(intent.getAction().equals("AlarmStuff")){
-            Log.d("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@", "WORKED");
-            //////
-        }
+        if(intent.getAction().equals("android.provider.Telephony.SMS_RECEIVED")) {
 
-        else if(intent.getAction().equals("android.provider.Telephony.SMS_RECEIVED")) {
+            Log.d("%%%%%%%%%%%%", "WORKED");
+
             // Retrieves a map of extended data from the intent.
             final Bundle bundle = intent.getExtras();
 
@@ -41,11 +40,11 @@ public class SMSReceiver extends BroadcastReceiver{
                     //Why cast bundle.get as Object[] you say?
                     //Well:
 
-                /*
-                    A PDU is a "protocol description unit", which is the industry format for an SMS message.
-                    Because SMSMessage reads/writes them you shouldn't need to dissect them.
-                    A large message might be broken into many, which is why it is an array of objects.
-                 */
+                   /*
+                    *  A PDU is a "protocol description unit", which is the industry format for an SMS message.
+                    *  Because SMSMessage reads/writes them you shouldn't need to dissect them.
+                    *  A large message might be broken into many, which is why it is an array of objects.
+                    */
 
                     final Object[] pdusObj = (Object[]) bundle.get("pdus");
 
@@ -76,6 +75,34 @@ public class SMSReceiver extends BroadcastReceiver{
                 Log.e("SmsReceiver", "Exception  smsReceiver" + e);
             }
         }
+
+        if(intent.getAction().equals("AlarmStuff")){
+            Log.d("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@", "ALARM WORKED");
+
+            sendMessage(context);
+        }
+
+    }
+
+    private void sendMessage(Context context) {
+        String filename = context.getExternalCacheDir().getAbsolutePath()+"/test.txt";
+        String content = "";
+
+        File file = new File(filename);
+
+        try {
+            BufferedReader br = new BufferedReader(new FileReader(file));
+            String line;
+            while ((line = br.readLine()) != null) {
+                content += line + "\n";
+            }
+
+            Log.d("^^^^^^^", content);
+
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private void writeToFile(String data, Context context, String senderNum, String message) throws IOException {
@@ -93,7 +120,7 @@ public class SMSReceiver extends BroadcastReceiver{
                 fos.flush();
                 fos.close();
 
-                sendSMS(context, senderNum, message);
+                //sendSMS(context, senderNum, message);
         }
         catch (Exception e) {
             Log.e("writeToFile", "Exception writeToFile" + e);

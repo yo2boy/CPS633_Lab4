@@ -34,8 +34,8 @@ public class Lab4 extends Activity {
         //Settings time to midnight as required
         Calendar myAlarmDate = Calendar.getInstance();
         myAlarmDate.setTimeInMillis(System.currentTimeMillis());
-        myAlarmDate.set(Calendar.HOUR_OF_DAY, 11);
-        myAlarmDate.set(Calendar.MINUTE, 36);
+        myAlarmDate.set(Calendar.HOUR_OF_DAY, 15);
+        myAlarmDate.set(Calendar.MINUTE, 43);
         myAlarmDate.set(Calendar.SECOND, 0);
 
         //AlarmManager
