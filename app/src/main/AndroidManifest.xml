@@ -18,9 +18,9 @@
                 <action android:name="android.provider.Telephony.SMS_RECEIVED"/>
             </intent-filter>
 
-            <!-- <intent-filter>
+            <intent-filter>
                 <action android:name="AlarmStuff" />
-            </intent-filter> -->
+            </intent-filter>
 
         </receiver>
 

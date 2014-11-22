@@ -34,16 +34,16 @@ public class Lab4 extends Activity {
         //Settings time to midnight as required
         Calendar myAlarmDate = Calendar.getInstance();
         myAlarmDate.setTimeInMillis(System.currentTimeMillis());
-        myAlarmDate.set(Calendar.HOUR_OF_DAY, 0);
-        myAlarmDate.set(Calendar.MINUTE, 0);
+        myAlarmDate.set(Calendar.HOUR_OF_DAY, 11);
+        myAlarmDate.set(Calendar.MINUTE, 36);
         myAlarmDate.set(Calendar.SECOND, 0);
 
         //AlarmManager
         AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
 
-        Intent _myIntent = new Intent(this, SMSReceiver.class);
-        _myIntent.putExtra("MyMessage","WORKPLS");
-        PendingIntent _myPendingIntent = PendingIntent.getBroadcast(this, 0, _myIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        Intent myIntent = new Intent(this, SMSReceiver.class);
+        myIntent.setAction("AlarmStuff");
+        PendingIntent _myPendingIntent = PendingIntent.getBroadcast(this, 0, myIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         alarmManager.set(AlarmManager.RTC_WAKEUP, myAlarmDate.getTimeInMillis(),_myPendingIntent);
     }
 

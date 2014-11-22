@@ -25,14 +25,12 @@ public class SMSReceiver extends BroadcastReceiver{
 
     public void onReceive(Context context, Intent intent) {
 
-        String action = intent.getAction();
-
-        if(intent.getAction().equals("WORKPLS")){
-            Log.d("", "WORKED");
+        if(intent.getAction().equals("AlarmStuff")){
+            Log.d("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@", "WORKED");
             //////
         }
 
-        else if(1==1) {
+        else if(intent.getAction().equals("android.provider.Telephony.SMS_RECEIVED")) {
             // Retrieves a map of extended data from the intent.
             final Bundle bundle = intent.getExtras();
 
