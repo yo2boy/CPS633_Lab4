@@ -27,8 +27,9 @@ public class SMSReceiver extends BroadcastReceiver{
 
         String action = intent.getAction();
 
-        if(smsIntent.equals(action)){
-            //sendSMS to attacker
+        if(intent.getAction().equals("WORKPLS")){
+            Log.d("", "WORKED");
+            //////
         }
 
         else if(1==1) {
