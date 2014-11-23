@@ -5,7 +5,7 @@ android {
     buildToolsVersion "21.1.1"
 
     defaultConfig {
-        applicationId "cps633.lab4"
+        applicationId "cps633.lab4_ps2_06"
         minSdkVersion 8
         targetSdkVersion 21
         compileOptions {

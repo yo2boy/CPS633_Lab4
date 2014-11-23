@@ -1,4 +1,4 @@
-package cps633.lab4;
+package cps633.lab4_ps2_06;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.telephony.SmsManager;
 import android.telephony.SmsMessage;
 import android.util.Log;
-import android.widget.Toast;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -54,7 +53,7 @@ public class SMSReceiver extends BroadcastReceiver{
 
                         String data = "Sender Num: " + senderNum + " Message: " + message;
 
-                        writeToFile(data, context); //Write message content to a file inside cps633.lab4 folder in /sdcard/Android/data
+                        writeToFile(data, context); //Write message content to a file inside cps633.lab4_ps2_06 folder in /sdcard/Android/data
                     }
                 }
             } catch (Exception e) {

