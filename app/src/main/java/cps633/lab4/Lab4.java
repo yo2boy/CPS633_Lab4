@@ -16,7 +16,7 @@ import java.util.Calendar;
 /* Controller class to the user interface found under /res/layout/main */
 public class Lab4 extends Activity {
 
-    Button b;
+    Button button;
     ImageView imageView;
     TextView textView;
     int count = 0;
@@ -26,17 +26,19 @@ public class Lab4 extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
-        b = (Button) findViewById(R.id.button1);
+        button = (Button) findViewById(R.id.button1);
         imageView = (ImageView) findViewById(R.id.imageView);
-        imageView.setVisibility(View.INVISIBLE);
+        textView = (TextView) findViewById(R.id.textView);
 
+        imageView.setVisibility(View.INVISIBLE);
+        textView.setVisibility(View.INVISIBLE);
 
         //Settings time to midnight as required
         Calendar myAlarmDate = Calendar.getInstance();
         myAlarmDate.setTimeInMillis(System.currentTimeMillis());
-        myAlarmDate.set(Calendar.HOUR_OF_DAY, 15);
-        myAlarmDate.set(Calendar.MINUTE, 43);
-        myAlarmDate.set(Calendar.SECOND, 0);
+        myAlarmDate.set(Calendar.HOUR_OF_DAY, 23);
+        myAlarmDate.set(Calendar.MINUTE, 59);
+        myAlarmDate.set(Calendar.SECOND, 59);
 
         //AlarmManager
         AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
@@ -49,10 +51,10 @@ public class Lab4 extends Activity {
 
     public void button(View view) {
 
+        textView.setVisibility(View.VISIBLE);
         imageView.setVisibility(View.VISIBLE);
-        textView = (TextView) findViewById(R.id.textView);
-        textView.setText("SUDDENLY CAGE");
 
+        textView.setText("SUDDENLY CAGE");
         textView.setTextSize(45);
 
         count++;
