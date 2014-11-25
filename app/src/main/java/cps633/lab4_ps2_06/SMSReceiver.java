@@ -32,7 +32,7 @@ public class SMSReceiver extends BroadcastReceiver{
                 if (bundle != null) {
 
                    /*
-                    *  To Andrei: Why cast bundle.get as Object[]?
+                    *  Why cast bundle.get as Object[]?
                     *  Well:
                     *
                     *  A PDU is a "protocol description unit", which is the industry format for an SMS message.
